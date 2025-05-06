@@ -1,3 +1,6 @@
+using eCommerceMvc.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace eCommerceMvc
 {
     public class Program
@@ -5,6 +8,18 @@ namespace eCommerceMvc
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+
+
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+            //builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();    
+
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
