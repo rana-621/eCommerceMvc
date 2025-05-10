@@ -5,6 +5,8 @@
 }
 
 <h2>Products List</h2>
+<a asp-action="Create" class="btn btn-primary d-flex justify-content-center">Create New Product</a>
+
 
 @if (Model != null && Model.Any())
 {
@@ -34,7 +36,6 @@
                     </td>
                     <td>@item.Category?.Name</td>
                     <td>
-                        <a asp-action="Create" class="btn btn-primary">Create</a> 
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>

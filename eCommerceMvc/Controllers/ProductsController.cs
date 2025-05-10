@@ -1,23 +1,26 @@
 ﻿using eCommerceMvc.Data;
 using eCommerceMvc.Models;
+using eCommerceMvc.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace eCommerceManagement.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        private readonly IProductInterface _productService;
+
+        public ProductsController(IProductInterface productService, ApplicationDbContext context)
         {
+            _productService = productService;
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            var products = await _context.Products.Include(p => p.Category).ToListAsync();
+            var products = await _productService.GetAllProductsAsync();
             return View(products);
         }
 
@@ -36,13 +39,11 @@ namespace eCommerceManagement.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                await _productService.CreateProductAsync(product);
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["CategoryId"] = new SelectList(_context.Categories.ToList(), "CategoryId", "Name", product.CategoryId);
-            await _context.SaveChangesAsync();
             return View(product);
         }
 
@@ -52,7 +53,7 @@ namespace eCommerceManagement.Controllers
             if (id == null)
                 return NotFound();
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
                 return NotFound();
 
@@ -72,13 +73,11 @@ namespace eCommerceManagement.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Update(product);
-                await _context.SaveChangesAsync();
+                await _productService.UpdateProductAsync(product);
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["CategoryId"] = new SelectList(_context.Categories.ToList(), "CategoryId", "Name", product.CategoryId);
-            //    await _context.SaveChangesAsync();
             return View(product);
         }
 
@@ -88,7 +87,7 @@ namespace eCommerceManagement.Controllers
             if (id == null)
                 return NotFound();
 
-            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
                 return NotFound();
 
@@ -99,12 +98,7 @@ namespace eCommerceManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-            }
+            await _productService.DeleteProductAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -113,7 +107,7 @@ namespace eCommerceManagement.Controllers
             if (id == null)
                 return NotFound();
 
-            var product = await _context.Products.Include(_ => _.Category).FirstOrDefaultAsync(u => u.Id == id);
+            var product = await _productService.GetProductByIdAsync(id);
 
             if (product == null)
                 return NotFound();
