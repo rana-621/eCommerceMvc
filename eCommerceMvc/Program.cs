@@ -1,4 +1,6 @@
 using eCommerceMvc.Data;
+using eCommerceMvc.Services.Implementation;
+using eCommerceMvc.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace eCommerceMvc
@@ -23,6 +25,8 @@ namespace eCommerceMvc
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IProductInterface, ProductService>();
 
             var app = builder.Build();
 
