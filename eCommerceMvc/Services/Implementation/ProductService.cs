@@ -1,6 +1,7 @@
 ﻿using eCommerceMvc.Data;
 using eCommerceMvc.Models;
 using eCommerceMvc.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace eCommerceMvc.Services.Implementation;
 
@@ -14,27 +15,35 @@ public class ProductService : IProductInterface
         _context = context;
     }
 
-    public Task<List<Product>> GetAllProductsAsync()
+    public async Task<List<Product>> GetAllProductsAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Products.Include(p => p.Category).ToListAsync();
     }
 
-    public Task<Product> GetProductByIdAsync()
+    public async Task<Product> GetProductByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
     }
-    public Task CreateProductAsync(Product product)
+    public async Task CreateProductAsync(Product product)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteProductAsync(int id)
-    {
-        throw new NotImplementedException();
+        _context.Products.AddAsync(product);
+        await _context.SaveChangesAsync();
     }
 
-    public Task UpdateProductAsync(Product product)
+    public async Task DeleteProductAsync(int id)
     {
-        throw new NotImplementedException();
+        var product = await _context.Products.FindAsync(id);
+        if (product != null)
+        {
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task UpdateProductAsync(Product product)
+    {
+        _context.Products.Update(product);
+        await _context.SaveChangesAsync();
+
     }
 }
