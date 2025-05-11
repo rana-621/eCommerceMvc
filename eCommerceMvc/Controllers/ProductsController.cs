@@ -18,9 +18,21 @@ namespace eCommerceManagement.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? categoryId)
         {
+
+
             var products = await _productService.GetAllProductsAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+                products = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+
+            if (categoryId.HasValue)
+                products = products.Where(p => p.CategoryId == categoryId.Value).ToList();
+
+            ViewData["Categories"] = new SelectList(_context.Categories.ToList(), "CategoryId", "Name");
+
             return View(products);
         }
 
