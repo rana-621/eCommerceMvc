@@ -7,6 +7,28 @@
 <h2>Products List</h2>
 <a asp-action="Create" class="btn btn-primary d-flex justify-content-center">Create New Product</a>
 
+<!-- Search & Filter Form -->
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" name="searchString" class="form-control" placeholder="Search by name..." />
+        </div>
+
+        <div class="col-md-4">
+            <select name="categoryId" class="form-control">
+                <option value="">All Categories</option>
+                @foreach (var category in (SelectList)ViewData["Categories"])
+                {
+                    <option value="@category.Value">@category.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </div>
+</form>
 
 @if (Model != null && Model.Any())
 {
