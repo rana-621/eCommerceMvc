@@ -4,18 +4,21 @@
     ViewData["Title"] = "Products List";
 }
 
-<h2>Products List</h2>
-<a asp-action="Create" class="btn btn-primary d-flex justify-content-center">Create New Product</a>
+<h2 class="text-center my-4">Products List</h2>
+
+<div class="d-flex justify-content-center mb-4">
+    <a asp-action="Create" class="btn btn-success btn-lg px-5">+ Add New Product</a>
+</div>
 
 <!-- Search & Filter Form -->
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" name="searchString" class="form-control" placeholder="Search by name..." />
+<form asp-action="Index" method="get" class="mb-5 bg-light p-4 rounded shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-5">
+            <input type="text" name="searchString" class="form-control form-control-lg" placeholder="🔎 Search by name..." />
         </div>
 
         <div class="col-md-4">
-            <select name="categoryId" class="form-control">
+            <select name="categoryId" class="form-select form-select-lg">
                 <option value="">All Categories</option>
                 @foreach (var category in (SelectList)ViewData["Categories"])
                 {
@@ -24,53 +27,54 @@
             </select>
         </div>
 
-        <div class="col-md-4">
-            <button type="submit" class="btn btn-primary w-100">Search</button>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Search</button>
         </div>
     </div>
 </form>
 
 @if (Model != null && Model.Any())
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>Category</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
                 <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Price.ToString("C")</td>
-                    <td>@item.Description</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl" alt="Product Image" width="100" />
-                        }
-                    </td>
-                    <td>@item.Category?.Name</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                       
-                    </td>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Category</th>
+                    <th class="text-center">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.Name</td>
+                        <td>@item.Price.ToString("C")</td>
+                        <td>@item.Description</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="Product Image" width="80" class="rounded shadow-sm" />
+                            }
+                        </td>
+                        <td>@item.Category?.Name</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm me-1">✏️ Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm me-1 text-white">👁️ View</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">🗑️ Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 else
 {
-    <div class="alert alert-info">
-        No products found. <a asp-action="Create">Create a new product</a>.
+    <div class="alert alert-info text-center">
+        No products found. <a asp-action="Create" class="btn btn-link">Create a new product</a>.
     </div>
 }
