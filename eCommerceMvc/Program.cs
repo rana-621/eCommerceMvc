@@ -27,6 +27,7 @@ namespace eCommerceMvc
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IProductInterface, ProductService>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             var app = builder.Build();
 

@@ -42,7 +42,7 @@ public class ProductService : IProductInterface
 
     public async Task UpdateProductAsync(Product product)
     {
-        _context.Products.Update(product);
+        //_context.Products.Update(product);
         await _context.SaveChangesAsync();
 
     }
